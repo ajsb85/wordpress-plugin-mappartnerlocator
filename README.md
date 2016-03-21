@@ -1,12 +1,12 @@
 # Map Partner Locator #
-**Contributors:**      Alexander J. Salas B.
-**Donate link:**       http://teclib.com
-**Tags:**
-**Requires at least:** 4.4
-**Tested up to:**      4.4
-**Stable tag:**        0.1.0
-**License:**           GPLv3
-**License URI:**       http://www.gnu.org/licenses/gpl-2.0.html
+* **Contributors:**      Alexander J. Salas B.
+* **Donate link:**       http://teclib.com
+* **Tags:**
+* **Requires at least:** 4.4
+* **Tested up to:**      4.4
+* **Stable tag:**        0.1.0
+* **License:**           GPLv3
+* **License URI:**       http://www.gnu.org/licenses/gpl-2.0.html
 
 ## Description ##
 
