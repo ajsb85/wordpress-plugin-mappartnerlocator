@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: Map Partner Locator
- * Plugin URI:  http://teclib.com
+ * Plugin URI:  http://github.com/ajsb85/mappartnerlocator
  * Description: MapPartnerLocator - Wordpress Plugin
  * Version:     0.1.0
  * Author:      Alexander J. Salas B.

@@ -9,7 +9,7 @@
 
 ## Description ##
 
-MapPartnerLocator - Wordpress Plugin - teclib' Edition
+MapPartnerLocator - Wordpress Plugin
 
 ## Installation ##
 
