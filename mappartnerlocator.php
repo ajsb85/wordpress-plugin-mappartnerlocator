@@ -181,14 +181,16 @@ class MapPartnerLocator {
 			$args = array(
 				'labels'             => $labels,
 		    'description'        => __( 'Description.', 'mappartnerlocator' ),
-				'public'             => true,
+				'public'             => false,
 				'publicly_queryable' => true,
 				'show_ui'            => true,
 				'show_in_menu'       => true,
 				'query_var'          => true,
-				'rewrite'            => array( 'slug' => 'partner' ),
+				'rewrite'            => false,
+				'exclude_from_search' => true,  // you should exclude it from search results
 				'capability_type'    => 'post',
-				'has_archive'        => true,
+				'show_in_nav_menus' => false,
+				'has_archive'        => false,
 				'hierarchical'       => false,
 				'menu_position'      => null,
 				'supports'           => array( 'title', 'editor', 'thumbnail')
@@ -198,9 +200,9 @@ class MapPartnerLocator {
 		}
 		add_filter( 'post_updated_messages', 'codex_partner_updated_messages' );
 
-		add_action( 'init', 'create_taxonomies' );
+		add_action( 'init', 'codex_create_taxonomies' );
 
-		function create_taxonomies() {
+		function codex_create_taxonomies() {
 			register_taxonomy(
 				'level',
 				'partner',
@@ -317,79 +319,29 @@ class MapPartnerLocator {
 
 		add_action('admin_head', 'codex_custom_help_tab');
 
-		function default_comments_off( $data ) {
+		function codex_default_comments_off( $data ) {
 		    if( $data['post_type'] == 'partner' && $data['post_status'] == 'auto-draft' ) {
 		        $data['comment_status'] = 0;
 		    }
 
 		    return $data;
 		}
-		add_filter( 'wp_insert_post_data', 'default_comments_off' );
+		add_filter( 'wp_insert_post_data', 'codex_default_comments_off' );
 
 		/**
 		 * Adds a meta box to the post editing screen
 		 */
-		function prfx_custom_meta() {
-			add_meta_box( 'prfx_meta', __( 'Location', 'mappartnerlocator' ), 'prfx_meta_callback', 'partner' );
+		function codex_custom_meta() {
+			add_meta_box( 'codex_meta', __( 'Location', 'mappartnerlocator' ), 'codex_meta_callback', 'partner' );
 		}
-		add_action( 'add_meta_boxes', 'prfx_custom_meta' );
+		add_action( 'add_meta_boxes', 'codex_custom_meta' );
 		/**
 		 * Outputs the content of the meta box
 		 */
-		function prfx_meta_callback( $post ) {
-			wp_nonce_field( basename( __FILE__ ), 'prfx_nonce' );
-			$prfx_stored_meta = get_post_meta( $post->ID );
+		function codex_meta_callback( $post ) {
+			wp_nonce_field( basename( __FILE__ ), 'codex_nonce' );
+			$codex_stored_meta = get_post_meta( $post->ID );
 			?>
-			<style>
-			#map {
-        height: 345px;
-        width: 100%;
-      }
-	      .controls {
-	        margin-top: 10px;
-	        border: 1px solid transparent;
-	        border-radius: 2px 0 0 2px;
-	        box-sizing: border-box;
-	        -moz-box-sizing: border-box;
-	        height: 32px;
-	        outline: none;
-	        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-	      }
-
-	      #pac-input {
-	        background-color: #fff;
-	        font-family: Roboto;
-	        font-size: 15px;
-	        font-weight: 300;
-	        margin-left: 12px;
-	        padding: 0 11px 0 13px;
-	        text-overflow: ellipsis;
-	        width: 300px;
-	      }
-
-	      #pac-input:focus {
-	        border-color: #4d90fe;
-	      }
-
-	      .pac-container {
-	        font-family: Roboto;
-	      }
-
-	      #type-selector {
-	        color: #fff;
-	        background-color: #4d90fe;
-	        padding: 5px 11px 0px 11px;
-	      }
-
-	      #type-selector label {
-	        font-family: Roboto;
-	        font-size: 13px;
-	        font-weight: 300;
-	      }
-	      #target {
-	        width: 345px;
-	      }
-	    </style>
 
 			<input id="pac-input" class="controls" type="text" placeholder="Search Box">
 	     <div id="map"></div>
@@ -402,94 +354,92 @@ class MapPartnerLocator {
 	       // parameter when you first load the API. For example:
 	       // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places">
 
-	       function initAutocomplete() {
-				<?php if ( isset ( $prfx_stored_meta['meta-latitude'] ) ) { ?>
-					var map = new google.maps.Map(document.getElementById('map'), {
-						center: {
-						 lat: <?php echo $prfx_stored_meta['meta-latitude'][0]; ?>,
-						 lng: <?php echo $prfx_stored_meta['meta-longitude'][0]; ?>
-					 	},
-						zoom: 24,
-						mapTypeId: google.maps.MapTypeId.ROADMAP
-					});
-					var marker =	new google.maps.Marker({
-							map: map,
-							title: "Location",
-							position: {
-								lat: <?php echo $prfx_stored_meta['meta-latitude'][0]; ?>,
-								lng: <?php echo $prfx_stored_meta['meta-longitude'][0]; ?>
-							}
-						});
-				<?php } else { ?>
-					var map = new google.maps.Map(document.getElementById('map'), {
-						center: {lat: -33.8688, lng: 151.2195},
-	          zoom: 13,
-						mapTypeId: google.maps.MapTypeId.ROADMAP
-					});
-				<?php } ?>
-	         // Create the search box and link it to the UI element.
-	         var input = document.getElementById('pac-input');
-	         var searchBox = new google.maps.places.SearchBox(input);
-	         map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
-
-	         // Bias the SearchBox results towards current map's viewport.
-	         map.addListener('bounds_changed', function() {
-	           searchBox.setBounds(map.getBounds());
-	         });
-
-	         var markers = [];
-	         // Listen for the event fired when the user selects a prediction and retrieve
-	         // more details for that place.
-	         searchBox.addListener('places_changed', function() {
-	           var places = searchBox.getPlaces();
-
-	           if (places.length == 0) {
-	             return;
-	           }
-
-	           // Clear out the old markers.
-	           markers.forEach(function(marker) {
-	             marker.setMap(null);
-	           });
-	           markers = [];
-
-	           // For each place, get the icon, name and location.
-	           var bounds = new google.maps.LatLngBounds();
-	           places.forEach(function(place) {
-	             var icon = {
-	               url: place.icon,
-	               size: new google.maps.Size(71, 71),
-	               origin: new google.maps.Point(0, 0),
-	               anchor: new google.maps.Point(17, 34),
-	               scaledSize: new google.maps.Size(25, 25)
-	             };
-
-	             // Create a marker for each place.
-	             markers.push(new google.maps.Marker({
-	               map: map,
-								 icon: icon,
-	               title: place.name,
-	               position: place.geometry.location
-	             }));
-							 var latitude = place.geometry.location.lat();
-							 var longitude = place.geometry.location.lng();
-							 document.getElementById("meta-latitude").value = latitude;
-							 document.getElementById("meta-longitude").value = longitude;
-							 //place.place_id
-	             if (place.geometry.viewport) {
-	               // Only geocodes have viewport.
-	               bounds.union(place.geometry.viewport);
-	             } else {
-	               bounds.extend(place.geometry.location);
-	             }
-	           });
-	           map.fitBounds(bounds);
-	         });
-	       }
+	      //  function initAutocomplete() {
+				// <?php if ( isset ( $codex_stored_meta['meta-latitude'] ) ) { ?>
+				// 	var map = new google.maps.Map(document.getElementById('map'), {
+				// 		center: {
+				// 		 lat: <?php echo $codex_stored_meta['meta-latitude'][0]; ?>,
+				// 		 lng: <?php echo $codex_stored_meta['meta-longitude'][0]; ?>
+				// 	 	},
+				// 		zoom: 24,
+				// 		mapTypeId: google.maps.MapTypeId.ROADMAP
+				// 	});
+				// 	var marker =	new google.maps.Marker({
+				// 			map: map,
+				// 			title: "Location",
+				// 			position: {
+				// 				lat: <?php echo $codex_stored_meta['meta-latitude'][0]; ?>,
+				// 				lng: <?php echo $codex_stored_meta['meta-longitude'][0]; ?>
+				// 			}
+				// 		});
+				// <?php } else { ?>
+				// 	var map = new google.maps.Map(document.getElementById('map'), {
+				// 		center: {lat: -33.8688, lng: 151.2195},
+	      //     zoom: 13,
+				// 		mapTypeId: google.maps.MapTypeId.ROADMAP
+				// 	});
+				// <?php } ?>
+	      //    // Create the search box and link it to the UI element.
+	      //    var input = document.getElementById('pac-input');
+	      //    var searchBox = new google.maps.places.SearchBox(input);
+	      //    map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+				//
+	      //    // Bias the SearchBox results towards current map's viewport.
+	      //    map.addListener('bounds_changed', function() {
+	      //      searchBox.setBounds(map.getBounds());
+	      //    });
+				//
+	      //    var markers = [];
+	      //    // Listen for the event fired when the user selects a prediction and retrieve
+	      //    // more details for that place.
+	      //    searchBox.addListener('places_changed', function() {
+	      //      var places = searchBox.getPlaces();
+				//
+	      //      if (places.length == 0) {
+	      //        return;
+	      //      }
+				//
+	      //      // Clear out the old markers.
+	      //      markers.forEach(function(marker) {
+	      //        marker.setMap(null);
+	      //      });
+	      //      markers = [];
+				//
+	      //      // For each place, get the icon, name and location.
+	      //      var bounds = new google.maps.LatLngBounds();
+	      //      places.forEach(function(place) {
+	      //        var icon = {
+	      //          url: place.icon,
+	      //          size: new google.maps.Size(71, 71),
+	      //          origin: new google.maps.Point(0, 0),
+	      //          anchor: new google.maps.Point(17, 34),
+	      //          scaledSize: new google.maps.Size(25, 25)
+	      //        };
+				//
+	      //        // Create a marker for each place.
+	      //        markers.push(new google.maps.Marker({
+	      //          map: map,
+				// 				 icon: icon,
+	      //          title: place.name,
+	      //          position: place.geometry.location
+	      //        }));
+				// 			 var latitude = place.geometry.location.lat();
+				// 			 var longitude = place.geometry.location.lng();
+				// 			 document.getElementById("meta-latitude").value = latitude;
+				// 			 document.getElementById("meta-longitude").value = longitude;
+				// 			 //place.place_id
+	      //        if (place.geometry.viewport) {
+	      //          // Only geocodes have viewport.
+	      //          bounds.union(place.geometry.viewport);
+	      //        } else {
+	      //          bounds.extend(place.geometry.location);
+	      //        }
+	      //      });
+	      //      map.fitBounds(bounds);
+	      //    });
+	      //  }
 
 	     </script>
-	     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBRzzhuR0g7WNMoDLjHpeaotH2DpBlCfik&libraries=places&callback=initAutocomplete"
-	          async defer></script>
 
 			<table id="newmeta">
 			<tbody>
@@ -498,7 +448,7 @@ class MapPartnerLocator {
 				<label for="meta-latitude" class="prfx-row-title"><?php _e( 'Latitude', 'mappartnerlocator' )?></label>
 			</td>
 			<td>
-				<input type="text" name="meta-latitude" id="meta-latitude" value="<?php if ( isset ( $prfx_stored_meta['meta-latitude'] ) ) echo $prfx_stored_meta['meta-latitude'][0]; ?>" />
+				<input type="text" name="meta-latitude" id="meta-latitude" value="<?php if ( isset ( $codex_stored_meta['meta-latitude'] ) ) echo $codex_stored_meta['meta-latitude'][0]; ?>" />
 			</td>
 			</tr>
 			<tr>
@@ -506,7 +456,7 @@ class MapPartnerLocator {
 				<label for="meta-longitude" class="prfx-row-title"><?php _e( 'Longitude', 'mappartnerlocator' )?></label>
 			</td>
 			<td>
-				<input type="text" name="meta-longitude" id="meta-longitude" value="<?php if ( isset ( $prfx_stored_meta['meta-longitude'] ) ) echo $prfx_stored_meta['meta-longitude'][0]; ?>" />
+				<input type="text" name="meta-longitude" id="meta-longitude" value="<?php if ( isset ( $codex_stored_meta['meta-longitude'] ) ) echo $codex_stored_meta['meta-longitude'][0]; ?>" />
 			</td>
 			</tr>
 			<tr>
@@ -514,7 +464,7 @@ class MapPartnerLocator {
 				<label for="meta-address" class="prfx-row-title"><?php _e( 'Address', 'mappartnerlocator' )?></label>
 			</td>
 			<td>
-				<input type="text" name="meta-address" id="meta-address" value="<?php if ( isset ( $prfx_stored_meta['meta-address'] ) ) echo $prfx_stored_meta['meta-address'][0]; ?>" />
+				<input type="text" name="meta-address" id="meta-address" value="<?php if ( isset ( $codex_stored_meta['meta-address'] ) ) echo $codex_stored_meta['meta-address'][0]; ?>" />
 			</td>
 			</tr>
 			<tr>
@@ -522,7 +472,7 @@ class MapPartnerLocator {
 				<label for="meta-country" class="prfx-row-title"><?php _e( 'Country', 'mappartnerlocator' )?></label>
 			</td>
 			<td>
-				<input type="text" name="meta-country" id="meta-country" value="<?php if ( isset ( $prfx_stored_meta['meta-country'] ) ) echo $prfx_stored_meta['meta-country'][0]; ?>" />
+				<input type="text" name="meta-country" id="meta-country" value="<?php if ( isset ( $codex_stored_meta['meta-country'] ) ) echo $codex_stored_meta['meta-country'][0]; ?>" />
 			</td>
 			</tr>
 			<tr>
@@ -530,7 +480,7 @@ class MapPartnerLocator {
 				<label for="meta-web" class="prfx-row-title"><?php _e( 'Web Site', 'mappartnerlocator' )?></label>
 			</td>
 			<td>
-				<input type="text" name="meta-web" id="meta-web" value="<?php if ( isset ( $prfx_stored_meta['meta-web'] ) ) echo $prfx_stored_meta['meta-web'][0]; ?>" />
+				<input type="text" name="meta-web" id="meta-web" value="<?php if ( isset ( $codex_stored_meta['meta-web'] ) ) echo $codex_stored_meta['meta-web'][0]; ?>" />
 			</td>
 			</tr>
 			<tr>
@@ -538,7 +488,7 @@ class MapPartnerLocator {
 				<label for="meta-beginning" class="prfx-row-title"><?php _e( 'Beginning', 'mappartnerlocator' )?></label>
 			</td>
 			<td>
-				<input type="date" name="meta-beginning" id="meta-beginning" value="<?php if ( isset ( $prfx_stored_meta['meta-beginning'] ) ) echo $prfx_stored_meta['meta-beginning'][0]; ?>" />
+				<input type="date" name="meta-beginning" id="meta-beginning" value="<?php if ( isset ( $codex_stored_meta['meta-beginning'] ) ) echo $codex_stored_meta['meta-beginning'][0]; ?>" />
 			</td>
 			</tr>
 			<tr>
@@ -546,7 +496,7 @@ class MapPartnerLocator {
 				<label for="meta-ending" class="prfx-row-title"><?php _e( 'Ending', 'mappartnerlocator' )?></label>
 			</td>
 			<td>
-				<input type="date" name="meta-ending" id="meta-ending" value="<?php if ( isset ( $prfx_stored_meta['meta-ending'] ) ) echo $prfx_stored_meta['meta-ending'][0]; ?>" />
+				<input type="date" name="meta-ending" id="meta-ending" value="<?php if ( isset ( $codex_stored_meta['meta-ending'] ) ) echo $codex_stored_meta['meta-ending'][0]; ?>" />
 			</td>
 			</tr>
 			</tbody>
@@ -556,12 +506,12 @@ class MapPartnerLocator {
 		/**
 		 * Saves the custom meta input
 		 */
-		function prfx_meta_save( $post_id ) {
+		function codex_meta_save( $post_id ) {
 
 			// Checks save status
 			$is_autosave = wp_is_post_autosave( $post_id );
 			$is_revision = wp_is_post_revision( $post_id );
-			$is_valid_nonce = ( isset( $_POST[ 'prfx_nonce' ] ) && wp_verify_nonce( $_POST[ 'prfx_nonce' ], basename( __FILE__ ) ) ) ? 'true' : 'false';
+			$is_valid_nonce = ( isset( $_POST[ 'codex_nonce' ] ) && wp_verify_nonce( $_POST[ 'codex_nonce' ], basename( __FILE__ ) ) ) ? 'true' : 'false';
 
 			// Exits script depending on save status
 			if ( $is_autosave || $is_revision || !$is_valid_nonce ) {
@@ -573,59 +523,103 @@ class MapPartnerLocator {
 				update_post_meta( $post_id, 'meta-latitude', sanitize_text_field( $_POST[ 'meta-latitude' ] ) );
 			}
 
-			// Checks for input and sanitizes/saves if needed
 			if( isset( $_POST[ 'meta-longitude' ] ) ) {
 				update_post_meta( $post_id, 'meta-longitude', sanitize_text_field( $_POST[ 'meta-longitude' ] ) );
 			}
 
-			// Checks for input and sanitizes/saves if needed
 			if( isset( $_POST[ 'meta-web' ] ) ) {
 				update_post_meta( $post_id, 'meta-web', sanitize_text_field( $_POST[ 'meta-web' ] ) );
 			}
 
-			// Checks for input and sanitizes/saves if needed
 			if( isset( $_POST[ 'meta-country' ] ) ) {
 				update_post_meta( $post_id, 'meta-country', sanitize_text_field( $_POST[ 'meta-country' ] ) );
 			}
 
-			// Checks for input and sanitizes/saves if needed
 			if( isset( $_POST[ 'meta-address' ] ) ) {
 				update_post_meta( $post_id, 'meta-address', sanitize_text_field( $_POST[ 'meta-address' ] ) );
 			}
 
-			// Checks for input and sanitizes/saves if needed
 			if( isset( $_POST[ 'meta-beginning' ] ) ) {
 				update_post_meta( $post_id, 'meta-beginning', sanitize_text_field( $_POST[ 'meta-beginning' ] ) );
 			}
 
-			// Checks for input and sanitizes/saves if needed
 			if( isset( $_POST[ 'meta-ending' ] ) ) {
 				update_post_meta( $post_id, 'meta-ending', sanitize_text_field( $_POST[ 'meta-ending' ] ) );
 			}
 		}
-		add_action( 'save_post', 'prfx_meta_save' );
+		add_action( 'save_post', 'codex_meta_save' );
 		/**
 		 * Adds the meta box stylesheet when appropriate
 		 */
-		function prfx_admin_styles(){
+		function codex_admin_assets(){
 			global $typenow;
-			if( $typenow == 'post' ) {
-				wp_enqueue_style( 'prfx_meta_box_styles', plugin_dir_url( __FILE__ ) . 'meta-box-styles.css' );
+			if( $typenow == 'partner' ) {
+				wp_enqueue_style( 'codex_meta_box_styles', plugin_dir_url( __FILE__ ) . 'assets/style.css' );
+				wp_enqueue_script( 'main-plugin-js', plugin_dir_url( __FILE__ ) . 'assets/main.js', null , '0.1.0', false );
+				wp_enqueue_script( 'google-map-js', '//maps.googleapis.com/maps/api/js?key=AIzaSyBRzzhuR0g7WNMoDLjHpeaotH2DpBlCfik&libraries=places&callback=initAutocomplete',
+			 		null , '0.1.0', true);
 			}
 		}
-		add_action( 'admin_print_styles', 'prfx_admin_styles' );
-		/**
-		 * Loads the color picker javascript
-		 */
-		function prfx_color_enqueue() {
-			global $typenow;
-			if( $typenow == 'post' ) {
-				wp_enqueue_style( 'wp-color-picker' );
-				wp_enqueue_script( 'meta-box-color-js', plugin_dir_url( __FILE__ ) . 'meta-box-color.js', array( 'wp-color-picker' ) );
-			}
-		}
-		add_action( 'admin_enqueue_scripts', 'prfx_color_enqueue' );
+		add_action( 'admin_print_styles', 'codex_admin_assets' );
 
+		// function my_content_filter( $content ) {
+		//    if ( is_page( 'partners-json' ) ) {
+		//       $content = 'this would be in the content area';
+		//    }
+		//    return $content;
+		// }
+		// add_filter( 'the_content', 'my_content_filter' );
+
+		function partners_callback() {
+			global $wpdb; // this is how you get access to the database
+
+
+			$args = array(
+			  'posts_per_page' => -1, // all
+				'offset'           => 0,
+				'category'         => '',
+				'category_name'    => '',
+				'orderby'          => 'date',
+				'order'            => 'DESC',
+				'include'          => '',
+				'exclude'          => '',
+				'meta_key'         => '',
+				'meta_value'       => '',
+				'post_type'        => 'partner',
+				'post_mime_type'   => '',
+				'post_parent'      => '',
+				'author'	   => '',
+				'post_status'      => 'publish',
+				'suppress_filters' => true
+			);
+
+			$query = new WP_Query( $args );
+
+			$partners = array();
+
+			while( $query->have_posts() ) : $query->the_post();
+
+			  // Add a parner entry
+			  $partners[] = array(
+					'id' => get_the_ID(),
+			    'name' => get_the_title(),
+			    'html' => get_the_content(),
+			    'author' => get_the_author(),
+					'meta' => get_post_meta(get_the_ID()),
+					'level' => get_the_terms( get_the_ID(), 'level' ),
+					'product' => get_the_terms( get_the_ID(), 'product-categories' )
+			  );
+
+			endwhile;
+
+			wp_reset_query();
+
+			echo json_encode( $partners );
+
+			wp_die(); // this is required to terminate immediately and return a proper response
+		}
+
+		add_action( 'wp_ajax_partners', 'partners_callback' );
 	}
 
 	/**

@@ -1,0 +1,76 @@
+#map {
+  height: 345px;
+  width: 100%;
+}
+
+.controls {
+  margin-top: 10px;
+  border: 1px solid transparent;
+  border-radius: 2px 0 0 2px;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  height: 32px;
+  outline: none;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+#pac-input {
+  background-color: #fff;
+  font-size: 15px;
+  font-weight: 300;
+  margin-left: 12px;
+  padding: 0 11px 0 13px;
+  text-overflow: ellipsis;
+  width: 300px;
+}
+
+#pac-input:focus {
+  border-color: #4d90fe;
+}
+
+.pac-container {
+  font-family: Roboto;
+}
+
+#type-selector {
+  color: #fff;
+  background-color: #4d90fe;
+  padding: 5px 11px 0px 11px;
+}
+
+#type-selector label {
+  font-family: Roboto;
+  font-size: 13px;
+  font-weight: 300;
+}
+#target {
+  width: 345px;
+}
+
+#newmeta {
+    width: 100%;
+    border-spacing: 0;
+    border: 1px solid #e5e5e5;
+    border-top: none;
+    background-color: #f7f7f7;
+    -webkit-box-shadow: 0 1px 1px rgba(0,0,0,.04);
+    box-shadow: 0 1px 1px rgba(0,0,0,.04);
+    z-index: 999;
+    padding: 4px 0px;
+}
+
+#newmeta td.left {
+    width: 200px;
+    padding: 0 6px 6px;
+    line-height: 1.4em;
+    font-size: 13px;
+}
+
+#newmeta td{
+  padding-right: 6px;
+}
+
+#newmeta input{
+  width: 100%;
+  margin-right: 6px;
+}
