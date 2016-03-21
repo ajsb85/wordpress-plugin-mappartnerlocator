@@ -6,7 +6,7 @@
  * Version:     0.1.0
  * Author:      Alexander J. Salas B.
  * Author URI:  http://ajsb85.com
- * Donate link: http://teclib.com
+ * Donate link: http://ajsb85.com
  * License:     GPLv3
  * Text Domain: mappartnerlocator
  * Domain Path: /languages
