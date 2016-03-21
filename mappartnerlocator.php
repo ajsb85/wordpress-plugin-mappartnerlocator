@@ -180,7 +180,7 @@ class MapPartnerLocator {
 
 			$args = array(
 				'labels'             => $labels,
-		                'description'        => __( 'Description.', 'mappartnerlocator' ),
+		    'description'        => __( 'Description.', 'mappartnerlocator' ),
 				'public'             => true,
 				'publicly_queryable' => true,
 				'show_ui'            => true,
@@ -191,12 +191,34 @@ class MapPartnerLocator {
 				'has_archive'        => true,
 				'hierarchical'       => false,
 				'menu_position'      => null,
-				'supports'           => array( 'title', 'editor', 'author')
+				'supports'           => array( 'title', 'editor', 'thumbnail')
 			);
 
 			register_post_type( 'partner', $args );
 		}
 		add_filter( 'post_updated_messages', 'codex_partner_updated_messages' );
+
+		add_action( 'init', 'create_taxonomies' );
+
+		function create_taxonomies() {
+			register_taxonomy(
+				'level',
+				'partner',
+				array(
+					'label' => __( 'Level of Partnership' ),
+					'rewrite' => array( 'slug' => 'level' ),
+					'hierarchical' => true,
+				)
+			);
+			register_taxonomy('product-categories', 'partner', array(
+	         'hierarchical' => true,
+	         'label' => 'Product Categories',
+	         'show_ui' => true,
+	         'query_var' => true,
+	         'rewrite' => array('slug' => 'products'),
+	         'singular_label' => 'Product Category')
+	     );
+		 }
 		/**
 		 * Partner update messages.
 		 *
@@ -308,7 +330,7 @@ class MapPartnerLocator {
 		 * Adds a meta box to the post editing screen
 		 */
 		function prfx_custom_meta() {
-			add_meta_box( 'prfx_meta', __( 'Location', 'prfx-textdomain' ), 'prfx_meta_callback', 'partner' );
+			add_meta_box( 'prfx_meta', __( 'Location', 'mappartnerlocator' ), 'prfx_meta_callback', 'partner' );
 		}
 		add_action( 'add_meta_boxes', 'prfx_custom_meta' );
 		/**
@@ -468,14 +490,67 @@ class MapPartnerLocator {
 	     </script>
 	     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBRzzhuR0g7WNMoDLjHpeaotH2DpBlCfik&libraries=places&callback=initAutocomplete"
 	          async defer></script>
-			<p>
-				<label for="meta-latitude" class="prfx-row-title"><?php _e( 'Latitude', 'prfx-textdomain' )?></label>
+
+			<table id="newmeta">
+			<tbody>
+			<tr>
+			<td class="left">
+				<label for="meta-latitude" class="prfx-row-title"><?php _e( 'Latitude', 'mappartnerlocator' )?></label>
+			</td>
+			<td>
 				<input type="text" name="meta-latitude" id="meta-latitude" value="<?php if ( isset ( $prfx_stored_meta['meta-latitude'] ) ) echo $prfx_stored_meta['meta-latitude'][0]; ?>" />
-			</p>
-			<p>
-				<label for="meta-longitude" class="prfx-row-title"><?php _e( 'Longitude', 'prfx-textdomain' )?></label>
+			</td>
+			</tr>
+			<tr>
+			<td class="left">
+				<label for="meta-longitude" class="prfx-row-title"><?php _e( 'Longitude', 'mappartnerlocator' )?></label>
+			</td>
+			<td>
 				<input type="text" name="meta-longitude" id="meta-longitude" value="<?php if ( isset ( $prfx_stored_meta['meta-longitude'] ) ) echo $prfx_stored_meta['meta-longitude'][0]; ?>" />
-			</p>
+			</td>
+			</tr>
+			<tr>
+			<td class="left">
+				<label for="meta-address" class="prfx-row-title"><?php _e( 'Address', 'mappartnerlocator' )?></label>
+			</td>
+			<td>
+				<input type="text" name="meta-address" id="meta-address" value="<?php if ( isset ( $prfx_stored_meta['meta-address'] ) ) echo $prfx_stored_meta['meta-address'][0]; ?>" />
+			</td>
+			</tr>
+			<tr>
+			<td class="left">
+				<label for="meta-country" class="prfx-row-title"><?php _e( 'Country', 'mappartnerlocator' )?></label>
+			</td>
+			<td>
+				<input type="text" name="meta-country" id="meta-country" value="<?php if ( isset ( $prfx_stored_meta['meta-country'] ) ) echo $prfx_stored_meta['meta-country'][0]; ?>" />
+			</td>
+			</tr>
+			<tr>
+			<td class="left">
+				<label for="meta-web" class="prfx-row-title"><?php _e( 'Web Site', 'mappartnerlocator' )?></label>
+			</td>
+			<td>
+				<input type="text" name="meta-web" id="meta-web" value="<?php if ( isset ( $prfx_stored_meta['meta-web'] ) ) echo $prfx_stored_meta['meta-web'][0]; ?>" />
+			</td>
+			</tr>
+			<tr>
+			<td class="left">
+				<label for="meta-beginning" class="prfx-row-title"><?php _e( 'Beginning', 'mappartnerlocator' )?></label>
+			</td>
+			<td>
+				<input type="date" name="meta-beginning" id="meta-beginning" value="<?php if ( isset ( $prfx_stored_meta['meta-beginning'] ) ) echo $prfx_stored_meta['meta-beginning'][0]; ?>" />
+			</td>
+			</tr>
+			<tr>
+			<td class="left">
+				<label for="meta-ending" class="prfx-row-title"><?php _e( 'Ending', 'mappartnerlocator' )?></label>
+			</td>
+			<td>
+				<input type="date" name="meta-ending" id="meta-ending" value="<?php if ( isset ( $prfx_stored_meta['meta-ending'] ) ) echo $prfx_stored_meta['meta-ending'][0]; ?>" />
+			</td>
+			</tr>
+			</tbody>
+			</table>
 			<?php
 		}
 		/**
@@ -503,6 +578,30 @@ class MapPartnerLocator {
 				update_post_meta( $post_id, 'meta-longitude', sanitize_text_field( $_POST[ 'meta-longitude' ] ) );
 			}
 
+			// Checks for input and sanitizes/saves if needed
+			if( isset( $_POST[ 'meta-web' ] ) ) {
+				update_post_meta( $post_id, 'meta-web', sanitize_text_field( $_POST[ 'meta-web' ] ) );
+			}
+
+			// Checks for input and sanitizes/saves if needed
+			if( isset( $_POST[ 'meta-country' ] ) ) {
+				update_post_meta( $post_id, 'meta-country', sanitize_text_field( $_POST[ 'meta-country' ] ) );
+			}
+
+			// Checks for input and sanitizes/saves if needed
+			if( isset( $_POST[ 'meta-address' ] ) ) {
+				update_post_meta( $post_id, 'meta-address', sanitize_text_field( $_POST[ 'meta-address' ] ) );
+			}
+
+			// Checks for input and sanitizes/saves if needed
+			if( isset( $_POST[ 'meta-beginning' ] ) ) {
+				update_post_meta( $post_id, 'meta-beginning', sanitize_text_field( $_POST[ 'meta-beginning' ] ) );
+			}
+
+			// Checks for input and sanitizes/saves if needed
+			if( isset( $_POST[ 'meta-ending' ] ) ) {
+				update_post_meta( $post_id, 'meta-ending', sanitize_text_field( $_POST[ 'meta-ending' ] ) );
+			}
 		}
 		add_action( 'save_post', 'prfx_meta_save' );
 		/**
