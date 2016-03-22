@@ -556,7 +556,7 @@ class MapPartnerLocator {
 			if( $typenow == 'partner' ) {
 				wp_enqueue_style( 'codex_meta_box_styles', plugin_dir_url( __FILE__ ) . 'assets/style.css' );
 				wp_enqueue_script( 'main-plugin-js', plugin_dir_url( __FILE__ ) . 'assets/main.js', null , '0.1.0', false );
-				wp_enqueue_script( 'google-map-js', '//maps.googleapis.com/maps/api/js?key=AIzaSyBRzzhuR0g7WNMoDLjHpeaotH2DpBlCfik&libraries=places&callback=initAutocomplete',
+				wp_enqueue_script( 'google-map-js', '//maps.googleapis.com/maps/api/js?key=AIzaSyAJoj6C6lAUNU_t8rK9MxdDFz3ZPh8LhmQ&libraries=places&callback=initAutocomplete',
 			 		null , '0.1.0', true);
 			}
 		}
