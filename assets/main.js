@@ -8,6 +8,7 @@ function initAutocomplete() {
   if(window.lat)
     markers.push(new google.maps.Marker({
       map: map,
+      icon: 'http://www.teclib-edition.com/wp-content/uploads/2015/06/map-marker.png',
       title: "Partner",
       position: {lat: window.lat, lng: window.lng}
     }));
