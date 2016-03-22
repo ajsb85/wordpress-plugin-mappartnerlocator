@@ -1,15 +1,15 @@
 function initAutocomplete() {
   var map = new google.maps.Map(document.getElementById('map'), {
-   center: {lat: lat?lat:-33.8688, lng: lng?lng:151.2195},
+   center: {lat: window.lat?window.lat:-33.8688, lng: window.lng?window.lng:151.2195},
    zoom: 16,
    mapTypeId: google.maps.MapTypeId.ROADMAP
   });
   var markers = [];
-  if(lat)
+  if(window.lat)
     markers.push(new google.maps.Marker({
       map: map,
       title: "Partner",
-      position: {lat: lat, lng: lng}
+      position: {lat: window.lat, lng: window.lng}
     }));
 
   // Create the search box and link it to the UI element.
@@ -97,7 +97,7 @@ function getCountry(addrComponents) {
 
 function getPlaceInfo(place){
   jQuery.get( "https://maps.googleapis.com/maps/api/place/details/json?placeid="+
-    place.place_id +"&key=AIzaSyAJoj6C6lAUNU_t8rK9MxdDFz3ZPh8LhmQ", function( data ) {
+    place.place_id + "&key=" + window.gmak, function( data ) {
     document.getElementById("meta-address").value =
         data.result.formatted_address;
     document.getElementById("meta-country").value =

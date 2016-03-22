@@ -397,10 +397,10 @@ class MapPartnerLocator {
 			<input id="pac-input" class="controls" type="text" placeholder="Search Box">
 	     <div id="map"></div>
 	     <script>
-			 var lat, lng;
-			 <?php if ( isset ( $codex_stored_meta['meta-latitude'] ) ) { ?>
-				 lat = <?php echo $codex_stored_meta['meta-latitude'][0]; ?>;
-				 lng = <?php echo $codex_stored_meta['meta-longitude'][0]; ?>;
+			 window.gmak = "<?php echo get_option('google_map_api_key'); ?>";
+			  <?php if ( isset ( $codex_stored_meta['meta-latitude'] ) ) { ?>
+				 window.lat = <?php echo $codex_stored_meta['meta-latitude'][0]; ?>;
+				 window.lng = <?php echo $codex_stored_meta['meta-longitude'][0]; ?>;
 			<?php } ?>
 	     </script>
 
@@ -520,7 +520,7 @@ class MapPartnerLocator {
 				$api_key = get_option('google_map_api_key');
 				wp_enqueue_style( 'codex_meta_box_styles', plugin_dir_url( __FILE__ ) . 'assets/style.css' );
 				wp_enqueue_script( 'main-plugin-js', plugin_dir_url( __FILE__ ) . 'assets/main.js', null , '0.1.0', false );
-				wp_enqueue_script( 'google-map-js', '//maps.googleapis.com/maps/api/js?key=AIzaSyAJoj6C6lAUNU_t8rK9MxdDFz3ZPh8LhmQ&libraries=places&callback=initAutocomplete',
+				wp_enqueue_script( 'google-map-js', '//maps.googleapis.com/maps/api/js?key=' . $api_key . '&libraries=places&callback=initAutocomplete',
 			 		null , '0.1.0', true);
 			}
 		}
