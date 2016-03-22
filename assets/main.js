@@ -1,17 +1,22 @@
 function initAutocomplete() {
-  var map = new google.maps.Map(document.getElementById('map'), {
-   center: {lat: window.lat?window.lat:-33.8688, lng: window.lng?window.lng:151.2195},
-   zoom: 16,
-   mapTypeId: google.maps.MapTypeId.ROADMAP
-  });
   var markers = [];
-  if(window.lat)
+  var map = new google.maps.Map(document.getElementById('map'), {
+    zoom: 16,
+    center: {lat: 52.511, lng: 13.447},
+    mapTypeId: google.maps.MapTypeId.ROADMAP
+  });
+  if (window.mappartnerlocator.lat) {
+    var position = {
+      lat: window.mappartnerlocator.lat,
+      lng: window.mappartnerlocator.lng }
+    map.setCenter(position);
     markers.push(new google.maps.Marker({
       map: map,
       icon: 'http://www.teclib-edition.com/wp-content/uploads/2015/06/map-marker.png',
       title: "Partner",
-      position: {lat: window.lat, lng: window.lng}
+      position: position
     }));
+  }
 
   // Create the search box and link it to the UI element.
   var input = document.getElementById('pac-input');
@@ -98,17 +103,16 @@ function getCountry(addrComponents) {
 
 function getPlaceInfo(place){
   jQuery.get( "https://maps.googleapis.com/maps/api/place/details/json?placeid="+
-    place.place_id + "&key=" + window.gmak, function( data ) {
+    place.place_id + "&key=" + window.mappartnerlocator.gmak, function( data ) {
     document.getElementById("meta-address").value =
         data.result.formatted_address;
     document.getElementById("meta-country").value =
         getCountry(data.result.address_components);
     document.getElementById("meta-web").value =
         data.result.website ? data.result.website : '';
-    var latitude = place.geometry.location.lat();
-    var longitude = place.geometry.location.lng();
-
-    document.getElementById("meta-latitude").value = latitude;
-    document.getElementById("meta-longitude").value = longitude;
+    var lat = place.geometry.location.lat();
+    var lng = place.geometry.location.lng();
+    document.getElementById("meta-latitude").value = lat;
+    document.getElementById("meta-longitude").value = lng;
   });
 }

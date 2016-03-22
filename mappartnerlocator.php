@@ -386,6 +386,16 @@ class MapPartnerLocator {
 			add_meta_box( 'codex_meta', __( 'Location', 'mappartnerlocator' ), 'codex_meta_callback', 'partner' );
 		}
 		add_action( 'add_meta_boxes', 'codex_custom_meta' );
+		function codex_notice__error() {
+			global $pagenow, $typenow;
+			if(empty (get_option('google_map_api_key')) && is_admin() && $pagenow=='post-new.php' OR empty (get_option('google_map_api_key')) && $pagenow=='post.php' && $typenow == 'partner' ) {
+		    ?>
+		    <div class="notice notice-error">
+		        <p><?php _e( 'Remember to put the Google Map API Key in the', 'mappartnerlocator' ); ?> <a href="options-general.php?page=mappartnerlocator">settings</a> page!</p>
+		    </div>
+		    <?php
+		}				}
+		add_action( 'admin_notices', 'codex_notice__error' );
 		/**
 		 * Outputs the content of the meta box
 		 */
@@ -397,10 +407,12 @@ class MapPartnerLocator {
 			<input id="pac-input" class="controls" type="text" placeholder="Search Box">
 	     <div id="map"></div>
 	     <script>
-			 window.gmak = "<?php echo get_option('google_map_api_key'); ?>";
-			  <?php if ( isset ( $codex_stored_meta['meta-latitude'] ) ) { ?>
-				 window.lat = <?php echo $codex_stored_meta['meta-latitude'][0]; ?>;
-				 window.lng = <?php echo $codex_stored_meta['meta-longitude'][0]; ?>;
+			 	window.mappartnerlocator = {};
+			 <?php if ( !empty ( get_option('google_map_api_key') ) ) { ?>
+				 window.mappartnerlocator.gmak = "<?php echo get_option('google_map_api_key'); ?>";
+			 <?php } if ( !empty ( $codex_stored_meta['meta-latitude'][0] ) ) { ?>
+				 window.mappartnerlocator.lat = <?php echo $codex_stored_meta['meta-latitude'][0]; ?>;
+				 window.mappartnerlocator.lng = <?php echo $codex_stored_meta['meta-longitude'][0]; ?>;
 			<?php } ?>
 	     </script>
 
