@@ -27,7 +27,7 @@ function initAutocomplete() {
 
     // Clear out the old markers.
     markers.forEach(function(marker) {
-      marker.setMap(null);
+        marker.setMap(null);
     });
     markers = [];
 
@@ -43,16 +43,22 @@ function initAutocomplete() {
       };
 
       // Create a marker for each place.
-      markers.push(new google.maps.Marker({
+      marker = new google.maps.Marker({
         map: map,
         icon: icon,
         title: place.name,
         position: place.geometry.location
-      }));
-      var latitude = place.geometry.location.lat();
-      var longitude = place.geometry.location.lng();
-      document.getElementById("meta-latitude").value = latitude;
-      document.getElementById("meta-longitude").value = longitude;
+      });
+      
+      marker.addListener('click', function() {
+        getPlaceInfo(place);
+        console.dir(place);
+      });
+
+      markers.push(marker);
+
+      if(places.length == 1)
+        getPlaceInfo(place);
       //place.place_id
       if (place.geometry.viewport) {
         // Only geocodes have viewport.
@@ -62,5 +68,36 @@ function initAutocomplete() {
       }
     });
     map.fitBounds(bounds);
+  });
+}
+
+function getCountry(addrComponents) {
+    for (var i = 0; i < addrComponents.length; i++) {
+        if (addrComponents[i].types[0] == "country") {
+            return addrComponents[i].long_name;
+        }
+        if (addrComponents[i].types.length == 2) {
+            if (addrComponents[i].types[0] == "political") {
+                return addrComponents[i].long_name;
+            }
+        }
+    }
+    return false;
+}
+
+function getPlaceInfo(place){
+  jQuery.get( "https://maps.googleapis.com/maps/api/place/details/json?placeid="+
+    place.place_id +"&key=AIzaSyAJoj6C6lAUNU_t8rK9MxdDFz3ZPh8LhmQ", function( data ) {
+    document.getElementById("meta-address").value =
+        data.result.formatted_address;
+    document.getElementById("meta-country").value =
+        getCountry(data.result.address_components);
+    document.getElementById("meta-web").value =
+        data.result.website ? data.result.website : '';
+    var latitude = place.geometry.location.lat();
+    var longitude = place.geometry.location.lng();
+
+    document.getElementById("meta-latitude").value = latitude;
+    document.getElementById("meta-longitude").value = longitude;
   });
 }
