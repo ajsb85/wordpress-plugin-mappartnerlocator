@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <script src="jquery.js" type="text/javascript"></script>
+    <script src="filter.js" type="text/javascript"></script>
+    <script src="data.js" type="text/javascript"></script>
+    <script src="main.js" type="text/javascript"></script>
+  </head>
+  <body>
+    <div>
+      <label for="searchbox">Search</label>
+      <input type="text" id="searchbox" placeholder="Search &hellip;">
+    </div>
+    <div id="partners"> </div>
+    <script id="partner-template" type="text/html">
+      <div>
+          <span><%= html %></span>
+       </div>
+    </script>
+  </body>
+</html>
