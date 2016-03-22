@@ -55,7 +55,58 @@ function mappartnerlocator_autoload_classes( $class_name ) {
 	MapPartnerLocator::include_file( $filename );
 }
 spl_autoload_register( 'mappartnerlocator_autoload_classes' );
+class options_page {
 
+	function __construct() {
+		add_action( 'admin_menu', array( $this, 'admin_menu' ) );
+	}
+
+
+	function add_global_custom_options()
+	{
+	    add_options_page('Global Custom Options', 'Global Custom Options', 'manage_options', 'functions','global_custom_options');
+	}
+	function admin_menu() {
+		add_options_page(
+			'Map Partner Locator Settings',
+			'Map Partner Locator',
+			'manage_options',
+			'mappartnerlocator',
+			array(
+				$this,
+				'settings_page'
+			)
+		);
+	}
+
+	function  settings_page() {
+		if ( !current_user_can( 'manage_options' ) )  {
+        wp_die( 'You do not have sufficient permissions to access this page.' );
+    }
+	?>
+
+	    <div>
+	        <?php screen_icon(); ?>
+					<div class="wrap">
+					<h1>Map Partner Locator</h1>
+	        <form method="post" action="options.php" novalidate="novalidate">
+	            <?php wp_nonce_field('update-options') ?>
+							<table class="form-table">
+							<tbody><tr>
+							<th scope="row"><label for="google_map_api_key">Google Map API Key</label></th>
+							<td><input type="text" name="google_map_api_key" value="<?php echo get_option('google_map_api_key'); ?>" class="regular-text"/></td>
+							</tr>
+								</tbody></table>
+	            <?php
+	            submit_button();
+	            ?>
+							<input type="hidden" name="action" value="update" />
+							<input type="hidden" name="page_options" value="google_map_api_key" />
+	        </form>
+	    </div>
+	<?php
+	}
+}
 
 /**
  * Main initiation class
@@ -466,6 +517,7 @@ class MapPartnerLocator {
 		function codex_admin_assets(){
 			global $pagenow, $typenow;
 			if(is_admin() && $pagenow=='post-new.php' OR $pagenow=='post.php' && $typenow == 'partner' ) {
+				$api_key = get_option('google_map_api_key');
 				wp_enqueue_style( 'codex_meta_box_styles', plugin_dir_url( __FILE__ ) . 'assets/style.css' );
 				wp_enqueue_script( 'main-plugin-js', plugin_dir_url( __FILE__ ) . 'assets/main.js', null , '0.1.0', false );
 				wp_enqueue_script( 'google-map-js', '//maps.googleapis.com/maps/api/js?key=AIzaSyAJoj6C6lAUNU_t8rK9MxdDFz3ZPh8LhmQ&libraries=places&callback=initAutocomplete',
@@ -532,6 +584,18 @@ class MapPartnerLocator {
 		}
 
 		add_action( 'wp_ajax_partners', 'partners_callback' );
+
+		new options_page;
+
+		// Add settings link on plugin page
+		function codex_settings_link($links) {
+		  $settings_link = '<a href="options-general.php?page=mappartnerlocator">Settings</a>';
+		  array_unshift($links, $settings_link);
+		  return $links;
+		}
+
+		$plugin = plugin_basename(__FILE__);
+		add_filter("plugin_action_links_$plugin", 'codex_settings_link' );
 	}
 
 	/**
