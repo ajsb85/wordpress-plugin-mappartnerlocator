@@ -1,5 +1,96 @@
 var partners = [
   {
+    "id": 24,
+    "name": "Infotel",
+    "html": "Esta empresa es muy way!",
+    "author": "ajsb85",
+    "meta": {
+      "_edit_last": [
+        "1"
+      ],
+      "_edit_lock": [
+        "1458655382:1"
+      ],
+      "meta-latitude": [
+        "28.469045"
+      ],
+      "meta-longitude": [
+        "-16.25921500000004"
+      ],
+      "meta-web": [
+        "http:\/\/www.mercadona.es\/"
+      ],
+      "meta-country": [
+        "Spain"
+      ],
+      "meta-address": [
+        "Calle de Perez de Rozas, s\/n, 38004 Santa Cruz de Tenerife, Santa Cruz de Tenerife, Spain"
+      ],
+      "meta-beginning": [
+        "2016-03-10"
+      ],
+      "meta-ending": [
+        "2017-03-10"
+      ]
+    },
+    "level": [
+      {
+        "term_id": 7,
+        "name": "Silver",
+        "slug": "silver",
+        "term_group": 0,
+        "term_taxonomy_id": 7,
+        "taxonomy": "level",
+        "description": "",
+        "parent": 0,
+        "count": 1,
+        "filter": "raw",
+        "object_id": 24
+      }
+    ],
+    "product": [
+      {
+        "term_id": 6,
+        "name": "GLPi",
+        "slug": "glpi",
+        "term_group": 0,
+        "term_taxonomy_id": 6,
+        "taxonomy": "product-categories",
+        "description": "",
+        "parent": 0,
+        "count": 2,
+        "filter": "raw",
+        "object_id": 24
+      },
+      {
+        "term_id": 9,
+        "name": "Stork",
+        "slug": "stork",
+        "term_group": 0,
+        "term_taxonomy_id": 9,
+        "taxonomy": "product-categories",
+        "description": "",
+        "parent": 0,
+        "count": 1,
+        "filter": "raw",
+        "object_id": 24
+      },
+      {
+        "term_id": 8,
+        "name": "Uhuru",
+        "slug": "uhuru",
+        "term_group": 0,
+        "term_taxonomy_id": 8,
+        "taxonomy": "product-categories",
+        "description": "",
+        "parent": 0,
+        "count": 1,
+        "filter": "raw",
+        "object_id": 24
+      }
+    ]
+  },
+  {
     "id": 13,
     "name": "devlib&#8217;",
     "html": "f da asda sd",
@@ -9,19 +100,19 @@ var partners = [
         "1"
       ],
       "_edit_lock": [
-        "1458597923:1"
+        "1458647932:1"
       ],
       "meta-latitude": [
-        "59.3362509"
+        "39.46755900000001"
       ],
       "meta-longitude": [
-        "18.07358469999997"
+        "-0.3800817999999708"
       ],
       "meta-address": [
-        "Diagonal 440, Barcelona"
+        "Calle San Vicente, 79, 46007 Val\u00e8ncia, Spain"
       ],
       "meta-web": [
-        "http:\/\/devlib.fr"
+        "http:\/\/www.mercadona.es\/"
       ],
       "meta-country": [
         "Spain"
@@ -58,7 +149,7 @@ var partners = [
         "taxonomy": "product-categories",
         "description": "",
         "parent": 0,
-        "count": 1,
+        "count": 2,
         "filter": "raw",
         "object_id": 13
       },
