@@ -67,14 +67,14 @@
       }
 
       var arrByID = partners.filter(filterByID);
-      var arrByLevel = partners.filter(filterByLevel, 'Gold');
-      var arrByCountry = partners.filter(filterByCountry, 'Spain');
-      var arrByProduct = partners.filter(filterByProduct);
+      //var arrByLevel = partners.filter(filterByLevel, 'Gold');
+      //var arrByCountry = partners.filter(filterByCountry, 'Spain');
+      //var arrByProduct = partners.filter(filterByProduct);
 
-      console.log('Filtered Array\n', arrByID);
-      console.log('Filtered Level\n', arrByLevel);
-      console.log('Filtered Country\n', arrByCountry);
-      console.log('Filtered Product\n', arrByProduct);
+      //console.log('Filtered Array\n', arrByID);
+      //console.log('Filtered Level\n', arrByLevel);
+      //console.log('Filtered Country\n', arrByCountry);
+      //console.log('Filtered Product\n', arrByProduct);
       // Filtered Array
       // [{ id: 15 }, { id: -1 }, { id: 0 }, { id: 3 }, { id: 12.2 }]
 
@@ -90,12 +90,19 @@
       var markers = [];
       var map;
       var infowindow;
+      var position;
+      var bounds;
 
       function initMap() {
-        map = new google.maps.Map(document.getElementById('map'), {
-          zoom: 16,
-          center: {lat: 52.520, lng: 13.410}
-        });
+        map = new google.maps.Map(document.getElementById('map'));
+        bounds = new google.maps.LatLngBounds();
+        for (var i = 0; i < partners.length; i++) {
+          position = {
+            lat: parseFloat(partners[i].meta['meta-latitude'][0]),
+            lng: parseFloat(partners[i].meta['meta-longitude'][0])
+          };
+           addMarkerWithTimeout(position, i * 500);
+        }
         var contentString = '<div id="content">'+
             '<div id="siteNotice">'+
             '</div>'+
@@ -117,13 +124,22 @@
         var name = document.getElementById('inputPartnerName').value;
         if(name){
           var arrByName = partners.filter(filterByName, name);
-          var position = {
+          position = {
             lat: parseFloat(arrByName[0].meta['meta-latitude'][0]),
             lng: parseFloat(arrByName[0].meta['meta-longitude'][0])
           };
           map.setCenter(position);
+          map.setZoom(16);
           addMarkerWithTimeout(position, 200);
         }
+        clearForm();
+      }
+
+      function clearForm(){
+        //document.getElementById('inputPartnerName').value = '';
+        document.getElementById('inputPartnerLocation').value = '';
+        document.getElementById('inputPartnerProduct').value = '';
+        document.getElementById('inputPartnerLevel').value = '';
       }
 
       function drop() {
@@ -163,10 +179,15 @@
           });
 
           markers.push(marker);
+          bounds.extend(marker.position);
+          map.fitBounds(bounds);
         }, timeout);
       }
 
       function clearMarkers() {
+        bounds = null;
+        delete bounds;
+        bounds = new google.maps.LatLngBounds(null);
         for (var i = 0; i < markers.length; i++) {
           markers[i].setMap(null);
         }
@@ -186,7 +207,7 @@
     <option value="ius sonsulting"></option>
     <option value="Loloyai Conseil"></option>
   </datalist>
-  <input type="text" placeholder="Partner Location" name="partnerLocation" list="partnerLocation" onchange="drop();"/>
+  <input id="inputPartnerLocation" type="text" placeholder="Partner Location" name="partnerLocation" list="partnerLocation" onchange="drop();"/>
   <datalist id="partnerLocation">
       <option value="Brasil">Brasil</option>
       <option value="Venezuela">Venezuela</option>
@@ -194,7 +215,7 @@
       <option value="Spain">Spain</option>
       <option value="Japan">Japan</option>
    </datalist>
-   <input type="text" placeholder="Choose a Product" name="partnerProduct" list="partnerProduct" onchange="drop();"/>
+   <input id="inputPartnerProduct" type="text" placeholder="Choose a Product" name="partnerProduct" list="partnerProduct" onchange="drop();"/>
    <datalist id="partnerProduct">
       <option value="Armadito">Armadito</option>
       <option value="GLPi">GLPi</option>
@@ -203,7 +224,7 @@
       <option value="Training">Training</option>
       <option value="Uhuru">Uhuru</option>
     </datalist>
-   <input type="text" placeholder="Partner Level" name="partnerLevel" list="partnerLevel" onchange="drop();"/>
+   <input id="inputPartnerLevel" type="text" placeholder="Partner Level" name="partnerLevel" list="partnerLevel" onchange="drop();"/>
    <datalist id="partnerLevel">
       <option value="GOLD">GOLD</option>
       <option value="SILVER">SILVER</option>
