@@ -102,17 +102,37 @@ function getCountry(addrComponents) {
 }
 
 function getPlaceInfo(place){
-  jQuery.get( "https://maps.googleapis.com/maps/api/place/details/json?placeid="+
-    place.place_id + "&key=" + window.mappartnerlocator.gmak, function( data ) {
-    document.getElementById("meta-address").value =
-        data.result.formatted_address;
-    document.getElementById("meta-country").value =
-        getCountry(data.result.address_components);
-    document.getElementById("meta-web").value =
-        data.result.website ? data.result.website : '';
-    var lat = place.geometry.location.lat();
-    var lng = place.geometry.location.lng();
-    document.getElementById("meta-latitude").value = lat;
-    document.getElementById("meta-longitude").value = lng;
-  });
+  if (window.XMLHttpRequest) { // Mozilla, Safari, IE7+ ...
+      httpRequest = new XMLHttpRequest();
+  } else if (window.ActiveXObject) { // IE 6 and older
+      httpRequest = new ActiveXObject("Microsoft.XMLHTTP");
+  }
+  httpRequest.onreadystatechange = function(){
+    if (httpRequest.readyState === XMLHttpRequest.DONE) {
+      if (httpRequest.status === 200) {
+          var data = JSON.parse(httpRequest.responseText);
+          document.getElementById("meta-address").value =
+              data.result.formatted_address;
+          document.getElementById("meta-country").value =
+              getCountry(data.result.address_components);
+          document.getElementById("meta-web").value =
+              data.result.website ? data.result.website : '';
+          var lat = place.geometry.location.lat();
+          var lng = place.geometry.location.lng();
+          document.getElementById("meta-latitude").value = lat;
+          document.getElementById("meta-longitude").value = lng;
+      } else {
+          // there was a problem with the request,
+          // for example the response may contain a 404 (Not Found)
+          // or 500 (Internal Server Error) response code
+      }
+    } else {
+        // still not ready
+    }
+  };
+  httpRequest.open(
+    'GET', 'https://maps.googleapis.com/maps/api/place/details/json?placeid=' +
+    place.place_id + '&key=' + window.mappartnerlocator.gmak, true);
+  httpRequest.setRequestHeader("Access-Control-Allow-Origin", "*");
+  httpRequest.send(null);
 }
