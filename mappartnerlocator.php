@@ -608,6 +608,257 @@ class MapPartnerLocator {
 
 		$plugin = plugin_basename(__FILE__);
 		add_filter("plugin_action_links_$plugin", 'codex_settings_link' );
+
+		//[MapPartnerLocator]
+		function codex_shortcode(){
+			return <<<HTML
+			<style>
+			  #map {
+			    width: 100%;
+			    height: 400px;
+			  }
+
+			</style>
+			  <script>
+var markers = [];
+var partners = [];
+var partnerNames = [];
+var partnerCountries = [];
+var partnerProducts = [];
+var partnerLevels = [];
+var map;
+var infowindow;
+var position;
+var bounds;
+
+function filterByName(obj) {
+  if (obj.name == this) {
+    return true;
+  }
+}
+
+function filterByLevel(obj) {
+  if(obj.level[0])
+    if (obj.level[0].name == this) {
+      return true;
+    }
+  return this == 'blank';
+}
+
+function filterByCountry(obj) {
+  if(obj.meta)
+    if (obj.meta['meta-country'][0] == this || this == 'blank') {
+      return true;
+    }
+}
+
+function filterByProduct(obj) {
+  var productFound = 0;
+  if(obj.product)
+    obj.product.forEach(function(product) {
+      if (product.name == this) {
+        productFound++;
+      }
+    }, this);
+  return productFound>0 || this == 'blank';
+}
+
+function clearMarkers() {
+  bounds = null;
+  delete bounds;
+  bounds = new google.maps.LatLngBounds(null);
+  for (var i = 0; i < markers.length; i++) {
+    markers[i].setMap(null);
+  }
+  markers = [];
+}
+
+function addMarkerWithTimeout(position, timeout) {
+  window.setTimeout(function() {
+    var marker = new google.maps.Marker({
+      position: position,
+      map: map,
+      animation: google.maps.Animation.DROP
+    });
+
+    marker.addListener('click', function() {
+      infowindow.open(map, this);
+    });
+
+    markers.push(marker);
+    bounds.extend(marker.position);
+    map.fitBounds(bounds);
+  }, timeout);
+}
+
+  function initMap() {
+		if (window.XMLHttpRequest) { // Mozilla, Safari, IE7+ ...
+				httpRequest = new XMLHttpRequest();
+		} else if (window.ActiveXObject) { // IE 6 and older
+				httpRequest = new ActiveXObject("Microsoft.XMLHTTP");
+		}
+		httpRequest.onreadystatechange = function(){
+			if (httpRequest.readyState === XMLHttpRequest.DONE) {
+				if (httpRequest.status === 200) {
+						partners = JSON.parse(httpRequest.responseText);
+
+		        map = new google.maps.Map(document.getElementById('map'));
+		        bounds = new google.maps.LatLngBounds();
+		        for (var i = 0; i < partners.length; i++) {
+		          position = {
+		            lat: parseFloat(partners[i].meta['meta-latitude'][0]),
+		            lng: parseFloat(partners[i].meta['meta-longitude'][0])
+		          };
+		           addMarkerWithTimeout(position, i * 500);
+		           partnerNames.push(partners[i].name);
+		           partnerCountries[partners[i].meta['meta-country'][0]] =
+		            partners[i].meta['meta-country'][0];
+		          if (Array.isArray(partners[i].product))
+		            partners[i].product.forEach(function(product) {
+		                partnerProducts[product.name] = product.name;
+		            });
+		          if (Array.isArray(partners[i].level))
+		            partners[i].level.forEach(function(level) {
+		                partnerLevels[level.name] = level.name;
+		            });
+		        }
+		        partnerNameDataList = document.getElementById('partnerName');
+		        partnerCountryDataList = document.getElementById('partnerLocation');
+		        partnerLevelDataList = document.getElementById('partnerLevel');
+		        partnerProductDataList = document.getElementById('partnerProduct');
+		        partnerNames.sort();
+		        partnerCountries.sort();
+		        partnerProducts.sort();
+		        partnerLevels.sort();
+		        partnerNames.forEach(function(item) {
+		          var option = document.createElement('option');
+		          option.value = item;
+		          partnerNameDataList.appendChild(option);
+		        });
+		        for (var key in partnerCountries) {
+		          var option = document.createElement('option');
+		          option.value = partnerCountries[key];
+		          var newtext = document.createTextNode(partnerCountries[key]);
+		          option.appendChild(newtext);
+		          partnerCountryDataList.appendChild(option);
+		        }
+		        for (var key in partnerProducts) {
+		          var option = document.createElement('option');
+		          option.value = partnerProducts[key];
+		          var newtext = document.createTextNode(partnerProducts[key]);
+		          option.appendChild(newtext);
+		          partnerProductDataList.appendChild(option);
+		        }
+		        for (var key in partnerLevels) {
+		          var option = document.createElement('option');
+		          option.value = partnerLevels[key];
+		          var newtext = document.createTextNode(partnerLevels[key]);
+		          option.appendChild(newtext);
+		          partnerLevelDataList.appendChild(option);
+		        }
+
+		        var partnerLocation = document.getElementById('partnerLocation');
+		        var partnerProduct = document.getElementById('partnerProduct');
+		        var partnerLevel = document.getElementById('partnerLevel');
+		        partnerLocation.addEventListener('change', mainFilter);
+		        partnerProduct.addEventListener('change', mainFilter);
+		        partnerLevel.addEventListener('change', mainFilter);
+
+		        function mainFilter() {
+		          clearMarkers();
+		          var filter1 = partners.filter(filterByCountry, partnerLocation.value);
+		          var filter2 = filter1.filter(filterByProduct, partnerProduct.value);
+		          var filter3 = filter2.filter(filterByLevel, partnerLevel.value);
+		          if(filter3.length>0)
+		            for (var i = 0; i < filter3.length; i++) {
+		              position = {
+		                lat: parseFloat(filter3[i].meta['meta-latitude'][0]),
+		                lng: parseFloat(filter3[i].meta['meta-longitude'][0])
+		              };
+		              addMarkerWithTimeout(position, i * 200);
+		            }
+		          else
+		            map.setZoom(2);
+		        }
+
+		        function findPartnerByName(partner) {
+		            if(partner.name == this){
+		              clearMarkers();
+		              document.getElementById("partnersForm").reset();
+		              position = {
+		                lat: parseFloat(partner.meta['meta-latitude'][0]),
+		                lng: parseFloat(partner.meta['meta-longitude'][0])
+		              };
+		              map.setCenter(position);
+		              map.setZoom(16);
+		              addMarkerWithTimeout(position, 200);
+		              return true;
+		            }
+		            return false;
+		        }
+
+		        var inputPartnerName = document.getElementById('inputPartnerName');
+
+		        inputPartnerName.addEventListener('input', function()
+		        {
+		            partners.find(findPartnerByName, inputPartnerName.value)
+		        });
+
+		        var contentString = '<div id="content">'+
+		            '<div id="siteNotice">'+
+		            '</div>'+
+		            '<h1 id="firstHeading" class="firstHeading">Infotel</h1>'+
+		            '<div id="bodyContent">'+
+		            '<p><b>The Infotel Group:</b> From mobile technology to Big Data.</p>'+
+		            '<p>Web Site: <a href="http://www.infotelcorp.com/">'+
+		            'http://www.infotelcorp.com/</a> </p>'+
+		            '</div>'+
+		            '</div>';
+
+		        infowindow = new google.maps.InfoWindow({
+		          content: contentString
+		        });
+				} else {
+						// there was a problem with the request,
+						// for example the response may contain a 404 (Not Found)
+						// or 500 (Internal Server Error) response code
+				}
+			} else {
+					// still not ready
+			}
+		};
+		var formData = new FormData();
+		formData.append('action', 'partners');
+		httpRequest.open(
+			'POST', 'http://localhost/wordpress/wp-admin/admin-ajax.php', true);
+		httpRequest.send(formData);
+
+  }
+
+
+			  </script>
+			<form id="partnersForm">
+			  <input id="inputPartnerName" type="text" placeholder="Partner Name" name="partnerName" list="partnerName"/>
+			  <datalist id="partnerName">
+			  </datalist>
+			  <select id="partnerLocation" name="partnerLocation">
+			    <option value="blank" selected="">Partner Location</option>
+			  </select>
+			  <select id="partnerProduct" name="partnerProduct">
+			    <option value="blank" selected="">Choose a Product</option>
+			  </select>
+			  <select id="partnerLevel" name="partnerLevel">
+			    <option value="blank" selected="">Partner Level</option>
+			  </select>
+			  </form>
+			  <div id="map"></div>
+			  <script async defer
+			  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBRzzhuR0g7WNMoDLjHpeaotH2DpBlCfik&callback=initMap">
+			  </script>
+HTML;
+		}
+		add_shortcode('MapPartnerLocator','codex_shortcode');
+
 	}
 
 	/**
