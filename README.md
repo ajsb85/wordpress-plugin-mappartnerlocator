@@ -1,6 +1,6 @@
 # Map Partner Locator #
 * **Contributors:**      Alexander J. Salas B.
-* **Tags:**
+* **Tags:**              map, partner, locator, google
 * **Requires at least:** 4.4
 * **Tested up to:**      4.4
 * **Stable tag:**        0.1.0
@@ -13,22 +13,18 @@ MapPartnerLocator - Wordpress Plugin
 
 ## Installation ##
 
+### Manual Installation ###
+
 1. Download the WordPress Plugin to your desktop.
 2. If downloaded as a zip archive, extract the Plugin folder to your desktop.
 3. Read through the "readme" file thoroughly to ensure you follow the installation instructions.
-4. With your FTP program, upload the Plugin folder to the wp-content/plugins folder in your WordPress directory online.
+4. With your FTP program, upload the entire `/mappartnerlocator` to the `wp-content/plugins` folder in your WordPress directory online.
 5. Go to Plugins screen and find the newly uploaded Plugin in the list.
 6. Click Activate to activate it.
 
 Check the **Details** readme file for customization and further instructions.
 
-### Manual Installation ###
-
-1. Upload the entire `/mappartnerlocator` directory to the `/wp-content/plugins/` directory.
-2. Activate Map Partner Locator through the 'Plugins' menu in WordPress.
-
 ## Frequently Asked Questions ##
-
 
 ## Screenshots ##
 
