@@ -13,6 +13,15 @@ MapPartnerLocator - Wordpress Plugin
 
 ## Installation ##
 
+1. Download the WordPress Plugin to your desktop.
+2. If downloaded as a zip archive, extract the Plugin folder to your desktop.
+3. Read through the "readme" file thoroughly to ensure you follow the installation instructions.
+4. With your FTP program, upload the Plugin folder to the wp-content/plugins folder in your WordPress directory online.
+5. Go to Plugins screen and find the newly uploaded Plugin in the list.
+6. Click Activate to activate it.
+
+Check the **Details** readme file for customization and further instructions.
+
 ### Manual Installation ###
 
 1. Upload the entire `/mappartnerlocator` directory to the `/wp-content/plugins/` directory.
@@ -23,6 +32,8 @@ MapPartnerLocator - Wordpress Plugin
 
 ## Screenshots ##
 
+## Screencast ##
+[![MapPartnerLocator](http://img.youtube.com/vi/ShTBtwqu-uM/0.jpg)](http://www.youtube.com/watch?v=ShTBtwqu-uM)
 
 ## Changelog ##
 
