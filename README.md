@@ -11,8 +11,6 @@
 
 MapPartnerLocator - Wordpress Plugin
 
-## Installation ##
-
 ### Manual Installation ###
 
 1. Download the WordPress Plugin to your desktop.
