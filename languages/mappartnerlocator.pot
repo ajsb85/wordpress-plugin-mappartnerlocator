@@ -1,0 +1,245 @@
+# Copyright (C) 2016 Alexander J. Salas B.
+# This file is distributed under the GPLv3.
+msgid ""
+msgstr ""
+"Project-Id-Version: Map Partner Locator 0.1.0\n"
+"Report-Msgid-Bugs-To: "
+"https://wordpress.org/support/plugin/mappartnerlocator\n"
+"POT-Creation-Date: 2016-04-04 14:17:16+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2016-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"X-Generator: grunt-wp-i18n 0.5.4\n"
+
+#: mappartnerlocator.php:221
+msgid "Add New Partner"
+msgstr ""
+
+#: mappartnerlocator.php:222
+msgid "New Partner"
+msgstr ""
+
+#: mappartnerlocator.php:223
+msgid "Edit Partner"
+msgstr ""
+
+#: mappartnerlocator.php:224
+msgid "View Partner"
+msgstr ""
+
+#: mappartnerlocator.php:225
+msgid "All Partners"
+msgstr ""
+
+#: mappartnerlocator.php:226
+msgid "Search Partners"
+msgstr ""
+
+#: mappartnerlocator.php:227
+msgid "Parent Partners:"
+msgstr ""
+
+#: mappartnerlocator.php:228
+msgid "No partners found."
+msgstr ""
+
+#: mappartnerlocator.php:229
+msgid "No partners found in Trash."
+msgstr ""
+
+#: mappartnerlocator.php:234
+msgid "Description."
+msgstr ""
+
+#: mappartnerlocator.php:261
+msgid "Level of Partnership"
+msgstr ""
+
+#: mappartnerlocator.php:291 mappartnerlocator.php:294
+msgid "Partner updated."
+msgstr ""
+
+#: mappartnerlocator.php:292
+msgid "Custom field updated."
+msgstr ""
+
+#: mappartnerlocator.php:293
+msgid "Custom field deleted."
+msgstr ""
+
+#: mappartnerlocator.php:296
+#. translators: %s: date and time of the revision
+msgid "Partner restored to revision from %s"
+msgstr ""
+
+#: mappartnerlocator.php:297
+msgid "Partner published."
+msgstr ""
+
+#: mappartnerlocator.php:298
+msgid "Partner saved."
+msgstr ""
+
+#: mappartnerlocator.php:299
+msgid "Partner submitted."
+msgstr ""
+
+#: mappartnerlocator.php:301
+msgid "Partner scheduled for: <strong>%1$s</strong>."
+msgstr ""
+
+#: mappartnerlocator.php:303
+#. translators: Publish box date format, see http:php.net/date
+msgid "M j, Y @ G:i"
+msgstr ""
+
+#: mappartnerlocator.php:305
+msgid "Partner draft updated."
+msgstr ""
+
+#: mappartnerlocator.php:311
+msgid "View partner"
+msgstr ""
+
+#: mappartnerlocator.php:317
+msgid "Preview partner"
+msgstr ""
+
+#: mappartnerlocator.php:330
+msgid "Things to remember when adding or editing a partner:"
+msgstr ""
+
+#: mappartnerlocator.php:332
+msgid "Specify the correct genre such as Mystery, or Historic."
+msgstr ""
+
+#: mappartnerlocator.php:333
+msgid ""
+"Specify the correct writer of the partner.  Remember that the Author module "
+"refers to you, the author of this partner review."
+msgstr ""
+
+#: mappartnerlocator.php:335
+msgid "If you want to schedule the partner review to be published in the future:"
+msgstr ""
+
+#: mappartnerlocator.php:337
+msgid "Under the Publish module, click on the Edit link next to Publish."
+msgstr ""
+
+#: mappartnerlocator.php:338
+msgid ""
+"Change the date to the date to actual publish this article, then click on "
+"Ok."
+msgstr ""
+
+#: mappartnerlocator.php:340
+msgid "For more information:"
+msgstr ""
+
+#: mappartnerlocator.php:341
+msgid ""
+"<a href=\"http://codex.wordpress.org/Posts_Edit_SubPanel\" "
+"target=\"_blank\">Edit Posts Documentation</a>"
+msgstr ""
+
+#: mappartnerlocator.php:342
+msgid ""
+"<a href=\"http://wordpress.org/support/\" target=\"_blank\">Support "
+"Forums</a>"
+msgstr ""
+
+#: mappartnerlocator.php:345
+msgid "This is the help screen displaying the table of partners blah blah blah."
+msgstr ""
+
+#: mappartnerlocator.php:386
+msgid "Location"
+msgstr ""
+
+#: mappartnerlocator.php:394
+msgid "Remember to put the Google Map API Key in the"
+msgstr ""
+
+#: mappartnerlocator.php:423
+msgid "Latitude"
+msgstr ""
+
+#: mappartnerlocator.php:431
+msgid "Longitude"
+msgstr ""
+
+#: mappartnerlocator.php:439
+msgid "Address"
+msgstr ""
+
+#: mappartnerlocator.php:447
+msgid "Country"
+msgstr ""
+
+#: mappartnerlocator.php:455
+msgid "Web Site"
+msgstr ""
+
+#: mappartnerlocator.php:463
+msgid "Beginning"
+msgstr ""
+
+#: mappartnerlocator.php:471
+msgid "Ending"
+msgstr ""
+
+#: mappartnerlocator.php:950
+msgid ""
+"Map Partner Locator is missing requirements and has been <a "
+"href=\"%s\">deactivated</a>. Please make sure all requirements are "
+"available."
+msgstr ""
+
+#. Plugin Name of the plugin/theme
+msgid "Map Partner Locator"
+msgstr ""
+
+#. Plugin URI of the plugin/theme
+msgid "http://github.com/ajsb85/mappartnerlocator"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid "MapPartnerLocator - Wordpress Plugin"
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "Alexander J. Salas B."
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "http://ajsb85.com"
+msgstr ""
+
+#: mappartnerlocator.php:216
+msgctxt "post type general name"
+msgid "Partners"
+msgstr ""
+
+#: mappartnerlocator.php:217
+msgctxt "post type singular name"
+msgid "Partner"
+msgstr ""
+
+#: mappartnerlocator.php:218
+msgctxt "admin menu"
+msgid "Partners"
+msgstr ""
+
+#: mappartnerlocator.php:219
+msgctxt "add new on admin bar"
+msgid "Partner"
+msgstr ""
+
+#: mappartnerlocator.php:220
+msgctxt "partner"
+msgid "Add New"
+msgstr ""
