@@ -1,4 +1,6 @@
 # Map Partner Locator #
+
+[![Greenkeeper badge](https://badges.greenkeeper.io/ajsb85/wordpress-plugin-mappartnerlocator.svg)](https://greenkeeper.io/)
 * **Contributors:**      Alexander J. Salas B.
 * **Tags:**              map, partner, locator, google
 * **Requires at least:** 4.4
